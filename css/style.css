@@ -231,6 +231,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+   transition: all 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.96);
 }
 
 .btn-primary {
