@@ -1,239 +1,205 @@
-/**
- * Core Application Bootstrap and Event Delegation Manager
- */
-
-import { store } from './state.js';
-import { renderBoard, enterEditMode, showToast } from './render.js';
+import { boardData, loadTasks, addTask, updateTask, deleteTask, clearAllTasks } from './state.js';
+import { renderBoard, showToast } from './render.js';
 import { initDragAndDrop } from './dragdrop.js';
 
-// Tracks current card ID being edited inline
-let activeEditingCardId = null;
+let editingTaskId = null;
 
-/**
- * Shows the task creation form for a specific column and hides others.
- * @param {string} columnId - The column ID ('todo' | 'inprogress' | 'done')
- */
-function toggleAddForm(columnId, forceShow = null) {
+function toggleForm(columnId, show = true) {
   const formWrapper = document.getElementById(`form-${columnId}`);
   if (!formWrapper) return;
 
-  const isHidden = formWrapper.classList.contains('hidden');
-  const shouldShow = forceShow !== null ? forceShow : isHidden;
-
-  // Close all forms first to keep visual sanity
-  document.querySelectorAll('.card-form-wrapper').forEach(wrapper => {
-    wrapper.classList.add('hidden');
-    const form = wrapper.querySelector('form');
+  document.querySelectorAll('.card-form-wrapper').forEach(el => {
+    el.classList.add('hidden');
+    const form = el.querySelector('form');
     if (form) form.reset();
   });
 
-  if (shouldShow) {
+  if (show) {
     formWrapper.classList.remove('hidden');
-    const firstInput = formWrapper.querySelector('.title-input');
-    if (firstInput) firstInput.focus();
+    const input = formWrapper.querySelector('.title-input');
+    if (input) input.focus();
   }
 }
 
-/**
- * Initial setup of event delegators and listeners.
- */
-function setupEventHandlers() {
+function setupListeners() {
   const board = document.querySelector('.board-container');
   if (!board) return;
 
-  // 1. Column Add Button Toggles
   document.querySelectorAll('.add-card-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.onclick = () => {
       const colId = btn.dataset.column;
-      toggleAddForm(colId);
-    });
+      toggleForm(colId, true);
+    };
   });
 
-  // 2. Column Cancel Button Toggles
   document.querySelectorAll('.cancel-form-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.onclick = () => {
       const colId = btn.dataset.column;
-      toggleAddForm(colId, false);
-    });
+      toggleForm(colId, false);
+    };
   });
 
-  // 3. Card Create Form Submissions
   document.querySelectorAll('.card-form').forEach(form => {
-    form.addEventListener('submit', (e) => {
+    form.onsubmit = (e) => {
       e.preventDefault();
-      
       const colId = form.dataset.column;
       const titleInput = form.querySelector('.title-input');
       const descInput = form.querySelector('.desc-input');
 
       const title = titleInput.value.trim();
-      const description = descInput.value.trim();
+      const desc = descInput.value.trim();
 
-      try {
-        store.addCard(colId, title, description);
-        
-        // Reset and hide form
-        form.reset();
-        toggleAddForm(colId, false);
-        
-        showToast('Task added successfully', 'success');
-      } catch (error) {
-        // Error handling is display-friendly and handled in state listener / caught here
-        // (the store already dispatches 'board-error' custom event)
+      if (!title) {
+        showToast('Please enter a title', 'error');
+        return;
       }
-    });
+
+      addTask(colId, title, desc);
+      form.reset();
+      toggleForm(colId, false);
+      renderBoard();
+      showToast('Task added successfully!', 'success');
+    };
   });
 
-  // 4. Global Action Event Delegation (Edit, Delete, and double click to edit)
-  board.addEventListener('click', (e) => {
+  board.onclick = (e) => {
     const editBtn = e.target.closest('[data-action="edit"]');
     const deleteBtn = e.target.closest('[data-action="delete"]');
 
-    // Handle Edit Action
     if (editBtn) {
-      const cardId = editBtn.dataset.cardId;
-      startCardInlineEdit(cardId);
+      const taskId = editBtn.dataset.cardId;
+      startEditing(taskId);
       return;
     }
 
-    // Handle Delete Action
     if (deleteBtn) {
-      const cardId = deleteBtn.dataset.cardId;
+      const taskId = deleteBtn.dataset.cardId;
       if (confirm('Are you sure you want to delete this task?')) {
-        try {
-          store.deleteCard(cardId);
-          showToast('Task deleted successfully', 'success');
-        } catch (error) {
-          // Toast is shown automatically by store error listener
-        }
+        deleteTask(taskId);
+        renderBoard();
+        showToast('Task deleted successfully', 'success');
       }
       return;
     }
-  });
+  };
 
-  // 5. Double Click on Card to Edit
-  board.addEventListener('dblclick', (e) => {
-    const cardEl = e.target.closest('.card');
-    if (cardEl && !cardEl.classList.contains('editing')) {
-      startCardInlineEdit(cardEl.id);
+  board.ondblclick = (e) => {
+    const card = e.target.closest('.card');
+    if (card && !card.classList.contains('editing')) {
+      startEditing(card.id);
     }
-  });
+  };
 
-  // 6. Clear Board Action Button
   const clearBtn = document.getElementById('clear-board-btn');
   if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      // Check if board is already empty
-      const state = store.getState();
-      const isEmpty = state.todo.length === 0 && 
-                      state.inprogress.length === 0 && 
-                      state.done.length === 0;
+    clearBtn.onclick = () => {
+      const isEmpty = boardData.todo.length === 0 &&
+                      boardData.inprogress.length === 0 &&
+                      boardData.done.length === 0;
 
       if (isEmpty) {
-        showToast('Board is already clear.', 'info');
+        showToast('Board is already empty', 'info');
         return;
       }
 
       if (confirm('Are you sure you want to delete all tasks on this board? This action cannot be undone.')) {
-        store.clearAll();
+        clearAllTasks();
+        renderBoard();
         showToast('Board cleared successfully', 'success');
       }
-    });
+    };
   }
-
-  // 7. Global State Error Handler
-  window.addEventListener('board-error', (e) => {
-    showToast(e.detail.message, 'error');
-  });
 }
 
-/**
- * Enters inline edit mode for a specific card element.
- * @param {string} cardId - The target card ID to edit
- */
-function startCardInlineEdit(cardId) {
-  // If editing another card, close it by rendering the board first
-  if (activeEditingCardId && activeEditingCardId !== cardId) {
-    renderBoard(store.getState());
+function startEditing(taskId) {
+  if (editingTaskId) {
+    renderBoard();
   }
 
-  const cardEl = document.getElementById(cardId);
+  const cardEl = document.getElementById(taskId);
   if (!cardEl) return;
 
-  // Retrieve card state
-  const state = store.getState();
-  let cardData = null;
-  
-  for (const colId in state) {
-    cardData = state[colId].find(card => card.id === cardId);
-    if (cardData) break;
+  let task = null;
+  for (let col in boardData) {
+    task = boardData[col].find(t => t.id === taskId);
+    if (task) break;
   }
+  if (!task) return;
 
-  if (!cardData) return;
+  editingTaskId = taskId;
+  cardEl.classList.add('editing');
+  cardEl.draggable = false;
 
-  activeEditingCardId = cardId;
+  cardEl.innerHTML = `
+    <form class="card-form">
+      <input type="text" class="card-input title-input" value="${escapeHTML(task.title)}" required maxlength="100">
+      <textarea class="card-input desc-input" rows="2" maxlength="500">${escapeHTML(task.description || '')}</textarea>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+      </div>
+    </form>
+  `;
 
-  // Enter edit mode
-  const { formWrapper, titleInput, descInput, cancelBtn } = enterEditMode(cardEl, cardData);
+  const form = cardEl.querySelector('form');
+  const titleInput = cardEl.querySelector('.title-input');
+  const descInput = cardEl.querySelector('.desc-input');
+  const cancelBtn = cardEl.querySelector('.cancel-btn');
 
-  // Bind inline edit handlers
-  cancelBtn.addEventListener('click', (e) => {
+  titleInput.focus();
+
+  cancelBtn.onclick = (e) => {
     e.stopPropagation();
-    activeEditingCardId = null;
-    // Discarding and reloading from store
-    renderBoard(store.getState());
-  });
+    editingTaskId = null;
+    renderBoard();
+  };
 
-  formWrapper.addEventListener('submit', (e) => {
+  form.onsubmit = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     const newTitle = titleInput.value.trim();
     const newDesc = descInput.value.trim();
 
-    try {
-      store.updateCard(cardId, { title: newTitle, description: newDesc });
-      activeEditingCardId = null;
-      showToast('Task updated successfully', 'success');
-    } catch (error) {
-      // Errors are caught and handled by toast listener
+    if (!newTitle) {
+      showToast('Title is required', 'error');
+      return;
     }
-  });
 
-  // Add click-outside listener to discard edits
-  const clickOutsideHandler = (e) => {
+    updateTask(taskId, newTitle, newDesc);
+    editingTaskId = null;
+    renderBoard();
+    showToast('Task updated successfully', 'success');
+  };
+
+  const outsideClick = (e) => {
     if (!cardEl.contains(e.target)) {
-      document.removeEventListener('click', clickOutsideHandler);
-      if (activeEditingCardId === cardId) {
-        activeEditingCardId = null;
-        renderBoard(store.getState());
+      document.removeEventListener('click', outsideClick);
+      if (editingTaskId === taskId) {
+        editingTaskId = null;
+        renderBoard();
       }
     }
   };
-  
-  // Delay slightly to prevent click event propagation triggering immediately
+
   setTimeout(() => {
-    document.addEventListener('click', clickOutsideHandler);
+    document.addEventListener('click', outsideClick);
   }, 100);
 }
 
-/**
- * Bootstrap application
- */
+function escapeHTML(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Setup subscription so render updates automatically on state changes
-  store.subscribe((state) => {
-    renderBoard(state);
-    // Re-initialize drag and drop since elements are re-created
-    initDragAndDrop();
-  });
-
-  // 2. Initial Draw
-  renderBoard(store.getState());
-
-  // 3. Setup Drag and Drop
+  loadTasks();
+  renderBoard();
   initDragAndDrop();
-
-  // 4. Bind static events
-  setupEventHandlers();
+  setupListeners();
 });
