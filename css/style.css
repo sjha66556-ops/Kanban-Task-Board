@@ -2,64 +2,60 @@
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: 'Outfit', sans-serif;
 
-  /* Default Dark Mode - pure black */
-  --bg-gradient-start: #000000;
-  --bg-gradient-end: #0a0a0a;
+  /* ===== DARK MODE (Premium Slate + Indigo Theme) ===== */
+  --bg-gradient-start: #0b1220;
+  --bg-gradient-end: #0f172a;
 
-  --column-bg: rgba(18, 18, 18, 0.7);
-  --column-border: rgba(255, 255, 255, 0.08);
-  --column-header-bg: rgba(28, 28, 28, 0.4);
+  --column-bg: rgba(15, 23, 42, 0.75);
+  --column-border: rgba(148, 163, 184, 0.12);
+  --column-header-bg: rgba(30, 41, 59, 0.55);
 
-  --card-bg: rgba(28, 28, 28, 0.9);
-  --card-border: rgba(255, 255, 255, 0.12);
-  --card-hover-border: rgba(99, 102, 241, 0.6);
+  --card-bg: rgba(30, 41, 59, 0.9);
+  --card-border: rgba(148, 163, 184, 0.15);
+  --card-hover-border: rgba(99, 102, 241, 0.8);
 
   --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
 
   --primary: #6366f1;
   --primary-hover: #4f46e5;
-  --primary-light: rgba(99, 102, 241, 0.15);
+  --primary-light: rgba(99, 102, 241, 0.18);
 
-  --success: #10b981;
-  --success-dot: #10b981;
-  --success-light: rgba(16, 185, 129, 0.15);
-
-  --warning: #f59e0b;
-  --warning-dot: #f59e0b;
-
+  --success: #22c55e;
+  --warning: #fbbf24;
   --danger: #ef4444;
-  --danger-light: rgba(239, 68, 68, 0.1);
-  --danger-hover: #dc2626;
 
   --todo-color: #6366f1;
   --inprogress-color: #f59e0b;
-  --done-color: #10b981;
+  --done-color: #22c55e;
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 6px 15px rgba(0,0,0,0.25);
+  --shadow-lg: 0 12px 30px rgba(0,0,0,0.35);
 
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
 
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
 
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --bg-subtle: rgba(255, 255, 255, 0.03);
-  --btn-secondary-bg: rgba(255, 255, 255, 0.05);
-  --btn-secondary-hover-bg: rgba(255, 255, 255, 0.1);
-  --btn-secondary-border: rgba(255, 255, 255, 0.08);
-  --card-input-bg: rgba(0, 0, 0, 0.2);
-  --card-input-border: rgba(255, 255, 255, 0.08);
-  --footer-border: rgba(255, 255, 255, 0.04);
-  --empty-border: rgba(255, 255, 255, 0.05);
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+
+  --border-subtle: rgba(148, 163, 184, 0.15);
+  --bg-subtle: rgba(148, 163, 184, 0.06);
+
+  --btn-secondary-bg: rgba(148, 163, 184, 0.08);
+  --btn-secondary-hover-bg: rgba(148, 163, 184, 0.15);
+  --btn-secondary-border: rgba(148, 163, 184, 0.2);
+
+  --card-input-bg: rgba(15, 23, 42, 0.6);
+  --card-input-border: rgba(148, 163, 184, 0.2);
+
+  --footer-border: rgba(148, 163, 184, 0.1);
+  --empty-border: rgba(148, 163, 184, 0.15);
 }
 
 body.light-mode {
