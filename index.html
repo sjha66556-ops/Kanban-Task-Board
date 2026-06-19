@@ -5,117 +5,245 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minimalist Kanban Board</title>
   <meta name="description" content="A robust, modular Kanban Task Board with native HTML5 Drag and Drop and persistent state.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
   <div class="app-container">
+
+    <!-- HEADER -->
     <header class="app-header">
       <div class="header-content">
         <h1>Kanban Flow</h1>
         <p class="subtitle">Organize, track, and optimize your team workflow</p>
       </div>
+
       <div class="header-actions">
-        <button id="theme-toggle-btn" class="btn btn-secondary" aria-label="Toggle theme">Toggle Theme</button>
-        <button id="clear-board-btn" class="btn btn-danger-outline" aria-label="Clear all tasks">Clear All</button>
+
+        <button id="clear-board-btn" class="btn btn-danger-outline">
+          Clear All
+        </button>
+
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search tasks...">
+        </div>
+
+        <button id="exportBtn" class="btn btn-secondary" aria-label="Export tasks as JSON">
+          Export JSON
+        </button>
+
+        <label class="btn btn-secondary">
+          Import JSON
+          <input type="file" id="importFile" hidden accept=".json">
+        </label>
+
         <span class="status-indicator">
           <span class="status-dot"></span>
           Synced
         </span>
+
       </div>
     </header>
 
+    <!-- DASHBOARD -->
+    <section class="dashboard">
+      <div class="stat-card">
+        <h3 id="totalTasks">0</h3>
+        <p>Total Tasks</p>
+      </div>
+
+      <div class="stat-card">
+        <h3 id="pendingTasks">0</h3>
+        <p>Pending</p>
+      </div>
+
+      <div class="stat-card">
+        <h3 id="completedTasks">0</h3>
+        <p>Completed</p>
+      </div>
+
+      <div class="stat-card">
+        <h3 id="completionRate">0%</h3>
+        <p>Completion Rate</p>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section class="progress-section">
+
+      <div class="progress-header">
+        <span>Project Progress</span>
+        <span id="progressPercent">0%</span>
+      </div>
+
+      <div class="progress-bar">
+        <div id="progressFill"></div>
+      </div>
+
+    </section>
+
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
+    <!-- BOARD -->
     <main class="board-container">
 
+      <!-- TODO -->
       <section class="column" id="column-todo" data-column-id="todo">
+
         <div class="column-header">
           <div class="column-title-wrapper">
             <span class="column-dot todo"></span>
             <h2>To Do</h2>
             <span class="card-count" id="count-todo">0</span>
           </div>
-          <button class="add-card-btn" data-column="todo" aria-label="Add card to To Do">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+
+          <button class="add-card-btn" data-column="todo">
+            +
           </button>
         </div>
 
         <div class="card-form-wrapper hidden" id="form-todo">
           <form class="card-form" data-column="todo">
-            <input type="text" placeholder="Task title..." class="card-input title-input" required max="100">
+
+            <input type="text" placeholder="Task title..." class="card-input title-input" required maxlength="100">
+
             <textarea placeholder="Description (optional)..." class="card-input desc-input" rows="2"></textarea>
+
+            <select class="card-input category-input">
+              <option value="Frontend">🎨 Frontend</option>
+              <option value="Backend">⚙️ Backend</option>
+              <option value="Design">✏️ Design</option>
+              <option value="Testing">🧪 Testing</option>
+            </select>
+
+            <select class="card-input priority-input">
+              <option value="Low">🟢 Low Priority</option>
+              <option value="Medium">🟡 Medium Priority</option>
+              <option value="High">🔴 High Priority</option>
+            </select>
+
+            <label class="field-label">Due Date</label>
+            <input type="date" class="card-input due-date-input">
+
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">Add Task</button>
               <button type="button" class="btn btn-secondary cancel-form-btn" data-column="todo">Cancel</button>
             </div>
+
           </form>
         </div>
 
-        <div class="cards-container" id="cards-todo" aria-label="To Do cards list">
-
-        </div>
+        <div class="cards-container" id="cards-todo"></div>
       </section>
 
+      <!-- IN PROGRESS -->
       <section class="column" id="column-inprogress" data-column-id="inprogress">
+
         <div class="column-header">
           <div class="column-title-wrapper">
             <span class="column-dot inprogress"></span>
             <h2>In Progress</h2>
             <span class="card-count" id="count-inprogress">0</span>
           </div>
-          <button class="add-card-btn" data-column="inprogress" aria-label="Add card to In Progress">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          </button>
+
+          <button class="add-card-btn" data-column="inprogress">+</button>
         </div>
 
         <div class="card-form-wrapper hidden" id="form-inprogress">
           <form class="card-form" data-column="inprogress">
-            <input type="text" placeholder="Task title..." class="card-input title-input" required max="100">
+
+            <input type="text" placeholder="Task title..." class="card-input title-input" required maxlength="100">
+
             <textarea placeholder="Description (optional)..." class="card-input desc-input" rows="2"></textarea>
+
+            <select class="card-input category-input">
+              <option value="Frontend">🎨 Frontend</option>
+              <option value="Backend">⚙️ Backend</option>
+              <option value="Design">✏️ Design</option>
+              <option value="Testing">🧪 Testing</option>
+            </select>
+
+            <select class="card-input priority-input">
+              <option value="Low">🟢 Low Priority</option>
+              <option value="Medium">🟡 Medium Priority</option>
+              <option value="High">🔴 High Priority</option>
+            </select>
+
+            <label class="field-label">Due Date</label>
+            <input type="date" class="card-input due-date-input">
+
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">Add Task</button>
               <button type="button" class="btn btn-secondary cancel-form-btn" data-column="inprogress">Cancel</button>
             </div>
+
           </form>
         </div>
 
-        <div class="cards-container" id="cards-inprogress" aria-label="In Progress cards list">
-
-        </div>
+        <div class="cards-container" id="cards-inprogress"></div>
       </section>
 
+      <!-- DONE -->
       <section class="column" id="column-done" data-column-id="done">
+
         <div class="column-header">
           <div class="column-title-wrapper">
             <span class="column-dot done"></span>
             <h2>Done</h2>
             <span class="card-count" id="count-done">0</span>
           </div>
-          <button class="add-card-btn" data-column="done" aria-label="Add card to Done">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          </button>
+
+          <button class="add-card-btn" data-column="done">+</button>
         </div>
 
         <div class="card-form-wrapper hidden" id="form-done">
           <form class="card-form" data-column="done">
-            <input type="text" placeholder="Task title..." class="card-input title-input" required max="100">
+
+            <input type="text" placeholder="Task title..." class="card-input title-input" required maxlength="100">
+
             <textarea placeholder="Description (optional)..." class="card-input desc-input" rows="2"></textarea>
+
+            <select class="card-input category-input">
+              <option value="Frontend">🎨 Frontend</option>
+              <option value="Backend">⚙️ Backend</option>
+              <option value="Design">✏️ Design</option>
+              <option value="Testing">🧪 Testing</option>
+            </select>
+
+            <select class="card-input priority-input">
+              <option value="Low">🟢 Low Priority</option>
+              <option value="Medium">🟡 Medium Priority</option>
+              <option value="High">🔴 High Priority</option>
+            </select>
+
+            <label class="field-label">Due Date</label>
+            <input type="date" class="card-input due-date-input">
+
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">Add Task</button>
               <button type="button" class="btn btn-secondary cancel-form-btn" data-column="done">Cancel</button>
             </div>
+
           </form>
         </div>
 
-        <div class="cards-container" id="cards-done" aria-label="Done cards list">
-
-        </div>
+        <div class="cards-container" id="cards-done"></div>
       </section>
+
     </main>
+
   </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>Kanban Flow © 2026</p>
+    <p>Built with HTML, CSS, JavaScript & Local Storage</p>
+  </footer>
 
   <script type="module" src="js/app.js"></script>
 </body>
