@@ -1,12 +1,10 @@
-/* CSS Design Tokens and Variables */
 :root {
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: 'Outfit', sans-serif;
 
-  /* Colors - Modern Deep Slate & Violet Theme */
   --bg-gradient-start: #090d16;
   --bg-gradient-end: #0f172a;
-  
+
   --column-bg: rgba(15, 23, 42, 0.45);
   --column-border: rgba(255, 255, 255, 0.04);
   --column-header-bg: rgba(30, 41, 59, 0.3);
@@ -14,50 +12,45 @@
   --card-bg: rgba(30, 41, 59, 0.6);
   --card-border: rgba(255, 255, 255, 0.08);
   --card-hover-border: rgba(99, 102, 241, 0.4);
-  
+
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
 
-  --primary: #6366f1; /* Indigo */
+  --primary: #6366f1;
   --primary-hover: #4f46e5;
   --primary-light: rgba(99, 102, 241, 0.15);
 
-  --success: #10b981; /* Emerald */
+  --success: #10b981;
   --success-dot: #10b981;
   --success-light: rgba(16, 185, 129, 0.15);
 
-  --warning: #f59e0b; /* Amber */
+  --warning: #f59e0b;
   --warning-dot: #f59e0b;
 
-  --danger: #ef4444; /* Rose */
+  --danger: #ef4444;
   --danger-light: rgba(239, 68, 68, 0.1);
   --danger-hover: #dc2626;
 
-  /* Status Dots */
   --todo-color: #6366f1;
   --inprogress-color: #f59e0b;
   --done-color: #10b981;
 
-  /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
 
-  /* Border Radius */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
 
-  /* Transitions */
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Reset & Base Styles */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -75,7 +68,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -94,7 +86,6 @@ body {
   background: rgba(99, 102, 241, 0.4);
 }
 
-/* App Container Layout */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -104,7 +95,6 @@ body {
   padding: 1.5rem;
 }
 
-/* Header Styles */
 .app-header {
   display: flex;
   flex-direction: column;
@@ -165,7 +155,6 @@ body {
   box-shadow: 0 0 8px var(--success);
 }
 
-/* Buttons */
 .btn {
   font-family: var(--font-sans);
   font-size: 0.85rem;
@@ -212,7 +201,6 @@ body {
   border-color: var(--danger);
 }
 
-/* Board & Columns Grid */
 .board-container {
   display: grid;
   grid-template-columns: 1fr;
@@ -221,7 +209,6 @@ body {
   flex: 1;
 }
 
-/* Responsiveness - Breakpoints */
 @media (min-width: 768px) {
   .board-container {
     grid-template-columns: repeat(3, 1fr);
@@ -241,7 +228,6 @@ body {
   transition: border-color var(--transition-normal), background-color var(--transition-normal);
 }
 
-/* Drag over column styling */
 .column.drag-over {
   border-color: var(--primary);
   background-color: rgba(99, 102, 241, 0.05);
@@ -316,7 +302,6 @@ body {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* Cards Container (Scrollable) */
 .cards-container {
   display: flex;
   flex-direction: column;
@@ -327,7 +312,6 @@ body {
   margin-right: -0.25rem;
 }
 
-/* Inline Card Forms */
 .card-form-wrapper {
   margin-bottom: 1rem;
   background: rgba(15, 23, 42, 0.5);
@@ -390,7 +374,6 @@ body {
   justify-content: flex-end;
 }
 
-/* Card Component */
 .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -399,8 +382,8 @@ body {
   box-shadow: var(--card-shadow);
   cursor: grab;
   position: relative;
-  transition: transform var(--transition-fast) ease, 
-              box-shadow var(--transition-fast) ease, 
+  transition: transform var(--transition-fast) ease,
+              box-shadow var(--transition-fast) ease,
               border-color var(--transition-fast) ease;
   user-select: none;
 }
@@ -414,7 +397,6 @@ body {
   cursor: grabbing;
 }
 
-/* Native Drag styling */
 .card.dragging {
   opacity: 0.4;
   transform: scale(0.96);
@@ -422,7 +404,6 @@ body {
   border-color: var(--text-muted);
 }
 
-/* Card Content details */
 .card-body {
   display: flex;
   flex-direction: column;
@@ -496,14 +477,12 @@ body {
   color: var(--danger);
 }
 
-/* Inline Editing Input Card State */
 .card.editing {
   background: rgba(15, 23, 42, 0.8);
   border-color: var(--primary);
   cursor: default;
 }
 
-/* Toast Alerts Container */
 .toast-container {
   position: fixed;
   top: 1.5rem;
@@ -566,12 +545,10 @@ body {
   color: var(--text-primary);
 }
 
-/* Helpers */
 .hidden {
   display: none !important;
 }
 
-/* Empty Board visual helper */
 .empty-placeholder {
   display: flex;
   flex-direction: column;

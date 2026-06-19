@@ -26,11 +26,10 @@
       </div>
     </header>
 
-    <!-- Notification system for errors/successes -->
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
     <main class="board-container">
-      <!-- To Do Column -->
+
       <section class="column" id="column-todo" data-column-id="todo">
         <div class="column-header">
           <div class="column-title-wrapper">
@@ -42,8 +41,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           </button>
         </div>
-        
-        <!-- Add Card Inline Form (hidden by default) -->
+
         <div class="card-form-wrapper hidden" id="form-todo">
           <form class="card-form" data-column="todo">
             <input type="text" placeholder="Task title..." class="card-input title-input" required max="100">
@@ -56,11 +54,10 @@
         </div>
 
         <div class="cards-container" id="cards-todo" aria-label="To Do cards list">
-          <!-- Cards injected dynamically here -->
+
         </div>
       </section>
 
-      <!-- In Progress Column -->
       <section class="column" id="column-inprogress" data-column-id="inprogress">
         <div class="column-header">
           <div class="column-title-wrapper">
@@ -73,7 +70,6 @@
           </button>
         </div>
 
-        <!-- Add Card Inline Form (hidden by default) -->
         <div class="card-form-wrapper hidden" id="form-inprogress">
           <form class="card-form" data-column="inprogress">
             <input type="text" placeholder="Task title..." class="card-input title-input" required max="100">
@@ -86,11 +82,10 @@
         </div>
 
         <div class="cards-container" id="cards-inprogress" aria-label="In Progress cards list">
-          <!-- Cards injected dynamically here -->
+
         </div>
       </section>
 
-      <!-- Done Column -->
       <section class="column" id="column-done" data-column-id="done">
         <div class="column-header">
           <div class="column-title-wrapper">
@@ -103,7 +98,6 @@
           </button>
         </div>
 
-        <!-- Add Card Inline Form (hidden by default) -->
         <div class="card-form-wrapper hidden" id="form-done">
           <form class="card-form" data-column="done">
             <input type="text" placeholder="Task title..." class="card-input title-input" required max="100">
@@ -116,13 +110,12 @@
         </div>
 
         <div class="cards-container" id="cards-done" aria-label="Done cards list">
-          <!-- Cards injected dynamically here -->
+
         </div>
       </section>
     </main>
   </div>
 
-  <!-- JS Modules -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
