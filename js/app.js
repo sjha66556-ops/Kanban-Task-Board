@@ -109,6 +109,15 @@ function setupListeners() {
       }
     };
   }
+
+  const themeBtn = document.getElementById('theme-toggle-btn');
+  if (themeBtn) {
+    themeBtn.onclick = () => {
+      document.body.classList.toggle('light-mode');
+      const isLight = document.body.classList.contains('light-mode');
+      localStorage.setItem('kanban_theme', isLight ? 'light' : 'dark');
+    };
+  }
 }
 
 function startEditing(taskId) {
@@ -198,6 +207,11 @@ function escapeHTML(str) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('kanban_theme');
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-mode');
+  }
+
   loadTasks();
   renderBoard();
   initDragAndDrop();
