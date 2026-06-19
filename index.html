@@ -12,20 +12,43 @@
 </head>
 <body>
   <div class="app-container">
-    <header class="app-header">
-      <div class="header-content">
-        <h1>Kanban Flow</h1>
-        <p class="subtitle">Organize, track, and optimize your team workflow</p>
-      </div>
-      <div class="header-actions">
-        <button id="theme-toggle-btn" class="btn btn-secondary" aria-label="Toggle theme">Toggle Theme</button>
-        <button id="clear-board-btn" class="btn btn-danger-outline" aria-label="Clear all tasks">Clear All</button>
-        <span class="status-indicator">
-          <span class="status-dot"></span>
-          Synced
-        </span>
-      </div>
-    </header>
+      <header class="app-header">
+        <div class="header-content">
+          <h1>Kanban Flow</h1>
+          <p class="subtitle">Organize, track, and optimize your team workflow</p>
+        </div>
+        <div class="header-actions">
+          <button id="theme-toggle-btn" class="btn btn-secondary" aria-label="Toggle theme">Toggle Theme</button>
+          <button id="clear-board-btn" class="btn btn-danger-outline" aria-label="Clear all tasks">Clear All</button>
+          <span class="status-indicator">
+            <span class="status-dot"></span>
+            Synced
+          </span>
+        </div>
+      </header>
+
+    <section class="dashboard">
+        <div class="stat-card">
+            <h3 id="totalTasks">0</h3>
+            <p>Total Tasks</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="pendingTasks">0</h3>
+            <p>Pending</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="completedTasks">0</h3>
+            <p>Completed</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="completionRate">0%</h3>
+            <p>Completion Rate</p>
+        </div>
+    </section>
+    
 
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
